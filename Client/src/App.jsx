@@ -45,18 +45,35 @@ function App() {
     setPassword(pwd);
   };
 
-  const savePassword = async () => {
-    try {
-      await fetch("/api/passwords", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, length }),
-      });
-      fetchHistory();
-    } catch (error) {
-      console.error("Error saving password:", error);
+const savePassword = async () => {
+  if (!password) return;
+
+  // Frontend duplicate check
+  const alreadyExists = history.some(
+    (item) => item.password === password
+  );
+
+  if (alreadyExists) return;
+
+  try {
+    const res = await fetch("/api/passwords", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password, length }),
+    });
+
+    if (res.ok) {
+      const saved = await res.json();
+
+      // ✅ UPDATE UI IMMEDIATELY
+      setHistory((prev) => [...prev, saved]);
     }
-  };
+  } catch (error) {
+    console.error("Error saving password:", error);
+  }
+};
+
+
 
   const copyPassword = () => {
     navigator.clipboard.writeText(password);

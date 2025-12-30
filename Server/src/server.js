@@ -16,9 +16,35 @@ app.get('/api/data', (req, res) => {
   res.json([])
 })
 
-app.get('/api/passwords', (req, res) => {
-  res.json(passwordHistory)
-})
+app.post('/api/passwords', (req, res) => {
+  const { password, length } = req.body;
+
+  // 1️⃣ Validate input
+  if (!password || password.length < 4) {
+    return res.status(400).json({ error: "Invalid password" });
+  }
+
+  // 2️⃣ Check for duplicate password
+  const alreadyExists = passwordHistory.some(
+    (item) => item.password === password
+  );
+
+  if (alreadyExists) {
+    return res.status(409).json({ error: "Password already exists" });
+  }
+
+  // 3️⃣ Save only if unique
+  const entry = {
+    id: Date.now(),
+    password,
+    length,
+    createdAt: new Date().toISOString(),
+  };
+
+  passwordHistory.push(entry);
+  res.json(entry);
+});
+
 
 app.post('/api/passwords', (req, res) => {
   const entry = { id: Date.now(), ...req.body, createdAt: new Date().toISOString() }
