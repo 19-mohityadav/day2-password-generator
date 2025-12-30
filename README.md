@@ -33,7 +33,7 @@ Contributors are encouraged to improve and extend it.
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/devsoc-aec/password-generator.git
+git clone https://github.com/devsoc-aec/day2-password-generator.git
 ```
 
 ### 2. Install dependencies
