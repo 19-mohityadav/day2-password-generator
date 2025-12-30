@@ -14,15 +14,14 @@ function App() {
     generatePassword()
   }, [])
 
-  // ✅ FIXED
   const fetchHistory = async () => {
     try {
       const res = await fetch('/api/passwords')
       const data = await res.json()
-      setHistory(data) // <-- FIX HERE
+      setHistory(data)
     } catch (error) {
       console.error('Error fetching history:', error)
-      setHistory([]) // safety
+      setHistory([])
     }
   }
 
@@ -64,6 +63,16 @@ function App() {
     if (length < 8) return { text: 'Weak', color: '#dc3545' }
     if (length < 12) return { text: 'Medium', color: '#ffc107' }
     return { text: 'Strong', color: '#28a745' }
+  }
+
+  // 🆕 DELETE SINGLE HISTORY ITEM
+  const deleteHistory = async (id) => {
+    try {
+      await fetch(`/api/passwords/${id}`, { method: 'DELETE' })
+      setHistory(prev => prev.filter(p => p.id !== id))
+    } catch (error) {
+      console.error('Error deleting password:', error)
+    }
   }
 
   const strength = getStrength()
@@ -173,6 +182,9 @@ function App() {
             <div
               key={p.id}
               style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
                 padding: '10px',
                 background: '#f8f9fa',
                 borderRadius: '4px',
@@ -180,7 +192,21 @@ function App() {
                 fontFamily: 'monospace'
               }}
             >
-              {p.password}
+              <span>{p.password}</span>
+
+              {/* 🆕 DELETE BUTTON */}
+              <button
+                onClick={() => deleteHistory(p.id)}
+                style={{
+                  background: '#dc3545',
+                  color: '#fff',
+                  border: 'none',
+                  padding: '4px 8px',
+                  cursor: 'pointer'
+                }}
+              >
+                ❌
+              </button>
             </div>
           ))}
         </div>
