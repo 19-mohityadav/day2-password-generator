@@ -14,12 +14,15 @@ function App() {
     generatePassword()
   }, [])
 
+  // ✅ FIXED
   const fetchHistory = async () => {
     try {
-      const response = await fetch('/api/passwords').then(res => res.json())
-      setHistory(data)
+      const res = await fetch('/api/passwords')
+      const data = await res.json()
+      setHistory(data) // <-- FIX HERE
     } catch (error) {
-      console.error('Error:', error)
+      console.error('Error fetching history:', error)
+      setHistory([]) // safety
     }
   }
 
@@ -41,10 +44,14 @@ function App() {
 
   const savePassword = async () => {
     try {
-      await fetch('/api/passwords', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password, length }) }).then(res => res.json())
+      await fetch('/api/passwords', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password, length })
+      })
       fetchHistory()
     } catch (error) {
-      console.error('Error:', error)
+      console.error('Error saving password:', error)
     }
   }
 
@@ -63,10 +70,13 @@ function App() {
 
   return (
     <div className="container">
-      <h1 style={{ textAlign: 'center', margin: '20px 0' }}>🔐 Password Generator</h1>
+      <h1 style={{ textAlign: 'center', margin: '20px 0' }}>
+        🔐 Password Generator
+      </h1>
 
       <div className="card">
         <h2>Generated Password</h2>
+
         <div style={{
           padding: '20px',
           background: '#f8f9fa',
@@ -78,19 +88,36 @@ function App() {
         }}>
           {password}
         </div>
+
         <div style={{ marginBottom: '15px' }}>
           <strong>Strength: </strong>
-          <span style={{ color: strength.color, fontWeight: 'bold' }}>{strength.text}</span>
+          <span style={{ color: strength.color, fontWeight: 'bold' }}>
+            {strength.text}
+          </span>
         </div>
+
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button onClick={generatePassword} style={{ flex: 1 }}>🔄 Generate</button>
-          <button onClick={copyPassword} style={{ flex: 1, backgroundColor: '#007bff' }}>📋 Copy</button>
-          <button onClick={savePassword} style={{ flex: 1, backgroundColor: '#28a745' }}>💾 Save</button>
+          <button onClick={generatePassword} style={{ flex: 1 }}>
+            🔄 Generate
+          </button>
+          <button
+            onClick={copyPassword}
+            style={{ flex: 1, backgroundColor: '#007bff' }}
+          >
+            📋 Copy
+          </button>
+          <button
+            onClick={savePassword}
+            style={{ flex: 1, backgroundColor: '#28a745' }}
+          >
+            💾 Save
+          </button>
         </div>
       </div>
 
       <div className="card">
         <h3>Options</h3>
+
         <div style={{ marginBottom: '15px' }}>
           <label>Length: {length}</label>
           <input
@@ -98,23 +125,61 @@ function App() {
             min="4"
             max="32"
             value={length}
-            onChange={(e) => setLength(parseInt(e.target.value))}
+            onChange={(e) => setLength(Number(e.target.value))}
             style={{ width: '100%' }}
           />
         </div>
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-          <label><input type="checkbox" checked={includeUpper} onChange={(e) => setIncludeUpper(e.target.checked)} /> Uppercase</label>
-          <label><input type="checkbox" checked={includeLower} onChange={(e) => setIncludeLower(e.target.checked)} /> Lowercase</label>
-          <label><input type="checkbox" checked={includeNumbers} onChange={(e) => setIncludeNumbers(e.target.checked)} /> Numbers</label>
-          <label><input type="checkbox" checked={includeSymbols} onChange={(e) => setIncludeSymbols(e.target.checked)} /> Symbols</label>
+          <label>
+            <input
+              type="checkbox"
+              checked={includeUpper}
+              onChange={(e) => setIncludeUpper(e.target.checked)}
+            /> Uppercase
+          </label>
+
+          <label>
+            <input
+              type="checkbox"
+              checked={includeLower}
+              onChange={(e) => setIncludeLower(e.target.checked)}
+            /> Lowercase
+          </label>
+
+          <label>
+            <input
+              type="checkbox"
+              checked={includeNumbers}
+              onChange={(e) => setIncludeNumbers(e.target.checked)}
+            /> Numbers
+          </label>
+
+          <label>
+            <input
+              type="checkbox"
+              checked={includeSymbols}
+              onChange={(e) => setIncludeSymbols(e.target.checked)}
+            /> Symbols
+          </label>
         </div>
       </div>
 
       {history.length > 0 && (
         <div className="card">
           <h3>History ({history.length})</h3>
-          {history.slice(-5).reverse().map(p => (
-            <div key={p.id} style={{ padding: '10px', background: '#f8f9fa', borderRadius: '4px', marginBottom: '10px', fontFamily: 'monospace' }}>
+
+          {history.slice(-5).reverse().map((p) => (
+            <div
+              key={p.id}
+              style={{
+                padding: '10px',
+                background: '#f8f9fa',
+                borderRadius: '4px',
+                marginBottom: '10px',
+                fontFamily: 'monospace'
+              }}
+            >
               {p.password}
             </div>
           ))}
