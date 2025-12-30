@@ -27,6 +27,8 @@ function App() {
   };
 
   const generatePassword = () => {
+    const safeLength = Math.min(32, Math.max(4, Number(length) || 12));
+
     let chars = "";
     if (includeLower) chars += "abcdefghijklmnopqrstuvwxyz";
     if (includeUpper) chars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -36,9 +38,10 @@ function App() {
     if (!chars) chars = "abcdefghijklmnopqrstuvwxyz";
 
     let pwd = "";
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < safeLength; i++) {
       pwd += chars.charAt(Math.floor(Math.random() * chars.length));
     }
+
     setPassword(pwd);
   };
 
