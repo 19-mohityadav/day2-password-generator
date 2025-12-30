@@ -17,7 +17,7 @@ function App() {
   const fetchHistory = async () => {
     try {
       const response = await fetch('/api/passwords').then(res => res.json())
-      setHistory(response.data)
+      setHistory(data)
     } catch (error) {
       console.error('Error:', error)
     }
