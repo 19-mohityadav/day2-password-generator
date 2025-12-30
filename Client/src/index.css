@@ -11,12 +11,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  background: linear-gradient(
-    135deg,
-    #667eea,
-    #764ba2,
-    #6b8cff
-  );
+  background: linear-gradient(135deg,
+      #667eea,
+      #764ba2,
+      #6b8cff);
 
   min-height: 100vh;
 }
@@ -33,11 +31,40 @@ body {
   padding: 20px;
 }
 
+.shining-title {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+
+  background: linear-gradient(90deg,
+      #ffffff 0%,
+      #ffd700 20%,
+      #ffffff 40%,
+      #ffffff 100%);
+
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  animation: shine 2.5s linear infinite;
+}
+
+@keyframes shine {
+  to {
+    background-position: -200% center;
+  }
+}
+
+
+
 .card {
   background: white;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
 }
 
@@ -60,7 +87,9 @@ button:disabled {
   cursor: not-allowed;
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
@@ -69,7 +98,9 @@ input, textarea, select {
   margin-bottom: 10px;
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   outline: none;
   border-color: #007bff;
 }
@@ -88,4 +119,3 @@ input:focus, textarea:focus, select:focus {
   margin: 0;
   cursor: pointer;
 }
-
