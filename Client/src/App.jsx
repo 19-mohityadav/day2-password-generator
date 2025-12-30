@@ -8,6 +8,7 @@ function App() {
   const [includeNumbers, setIncludeNumbers] = useState(true);
   const [includeSymbols, setIncludeSymbols] = useState(true);
   const [history, setHistory] = useState([]);
+  const [copied, setCopied] = useState(false); // ✅ MOVED HERE
 
   useEffect(() => {
     fetchHistory();
@@ -56,7 +57,11 @@ function App() {
 
   const copyPassword = () => {
     navigator.clipboard.writeText(password);
-    alert("Password copied to clipboard!");
+    setCopied(true);
+
+    setTimeout(() => {
+      setCopied(false);
+    }, 1500);
   };
 
   const getStrength = () => {
@@ -65,7 +70,6 @@ function App() {
     return { text: "Strong", color: "#28a745" };
   };
 
-  // 🆕 DELETE SINGLE HISTORY ITEM
   const deleteHistory = async (id) => {
     try {
       await fetch(`/api/passwords/${id}`, { method: "DELETE" });
@@ -111,12 +115,31 @@ function App() {
           <button onClick={generatePassword} style={{ flex: 1 }}>
             🔄 Generate
           </button>
-          <button
-            onClick={copyPassword}
-            style={{ flex: 1, backgroundColor: "#007bff" }}
-          >
-            📋 Copy
-          </button>
+
+          <div style={{ flex: 1, position: "relative" }}>
+            <button
+              onClick={copyPassword}
+              style={{ width: "100%", backgroundColor: "#007bff" }}
+            >
+              📋 Copy
+            </button>
+
+            {copied && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: "-22px",
+                  right: "10px",
+                  fontSize: "12px",
+                  color: "#28a745",
+                  fontWeight: "bold",
+                }}
+              >
+                Copied!
+              </span>
+            )}
+          </div>
+
           <button
             onClick={savePassword}
             style={{ flex: 1, backgroundColor: "#28a745" }}
@@ -209,7 +232,6 @@ function App() {
               >
                 <span>{p.password}</span>
 
-                {/* 🆕 DELETE BUTTON */}
                 <button
                   onClick={() => deleteHistory(p.id)}
                   style={{
